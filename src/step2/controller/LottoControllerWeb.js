@@ -1,16 +1,30 @@
+import '../public/style.css';
+import '../public/global.css';
+import '../public/lottoStatisticsModal.css';
+import '../public/inputWinningLottos.css';
+import '../public/buyLotto.css';
+import '../public/generatedLottos.css';
+
 import inputView from '../view/inputView';
-import domSelector from '../util/dom';
+import domSelector from '../view/domSelector';
+import outputView from '../view/outputView';
+
 import { addEvent } from '../util/event';
+import executeRetry from '../util/executeRetry';
+
 import LottoPaymentValidator from '../../step1/validators/LottoPaymentValidator';
 import LottoGenerator from '../../step1/domains/LottoGenerator';
-import outputView from '../view/outputView';
-import executeRetry from '../util/executeRetry';
 import LottoValidator from '../../step1/validators/LottoValidator';
 import LottoCalculator from '../../step1/domains/LottoCalculator';
 import LOTTO_RULES from '../../step1/constants/lotto-rules';
 
-const { lottoPriceButton, checkResultButton, restartButton, close } =
-  domSelector;
+const {
+  afterBuyLottos,
+  restartButton,
+  close,
+  buyLottosForm,
+  checkResultButton,
+} = domSelector;
 
 class LottoControllerWeb {
   #lottoCount;
@@ -26,9 +40,14 @@ class LottoControllerWeb {
   }
 
   async run() {
-    addEvent(lottoPriceButton, 'click', (e) => {
+    addEvent(buyLottosForm, 'submit', (e) => {
       this.#lottoPurchaseHandler(e);
     });
+
+    addEvent(afterBuyLottos, 'submit', (e) => {
+      this.#lottoResultHandler(e);
+    });
+
     addEvent(checkResultButton, 'click', (e) => {
       this.#lottoResultHandler(e);
     });
